@@ -1,5 +1,51 @@
 window.onload = function() {
     imgLocation('container', 'box');
+    var imgData = {
+        "data": [{
+            "src": "2.jpg"
+        }, {
+            "src": "3.jpg"
+        }, {
+            "src": "4.jpg"
+        }, {
+            "src": "5.jpg"
+        }, {
+            "src": "6.jpg"
+        }]
+    }
+    window.onscroll = function() {
+        if (checkFlag()) {
+            var cparent = document.getElementById('container');
+            for (var i = 0; i < imgData.data.length; i++) {
+                var ccontent = document.createElement('div'); //添加元素节点
+                ccontent.className = 'box'; //添加类名
+                cparent.appendChild(ccontent);
+                var boxImg = document.createElement('div'); //添加子节点
+                boxImg.className = "box_img";
+                ccontent.appendChild(boxImg);
+                var img = document.createElement('img');
+                img.src = 'img/' + imgData.data[i].src;
+                boxImg.appendChild(img);
+            }
+        }
+        imgLocation('container', 'box');
+    }
+}
+
+function checkFlag() {
+    var cparent = document.getElementById('container');
+    var ccontent = getChildElement(cparent, 'box');
+    //得到最后一张图片距离顶部的高度
+    var lastContentHeight = ccontent[ccontent.length - 1].offsetTop;
+    //获取元素距离他容器顶部的像素距离
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    //获取页面高度
+    var pageHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+    if (lastContentHeight < scrollTop + pageHeight) {
+        return true;
+    }
+
 }
 
 function imgLocation(parent, content) {
@@ -17,14 +63,14 @@ function imgLocation(parent, content) {
     for (var i = 0; i < ccontent.length; i++) {
         if (i < num) {
             BoxHeightArr[i] = ccontent[i].offsetHeight;
-            console.log(BoxHeightArr[i]);
         } else {
             var minHeight = Math.min.apply(null, BoxHeightArr);
             var minIndex = getMinHeightLocation(BoxHeightArr, minHeight);
 
             ccontent[i].style.position = 'absolute';
             ccontent[i].style.top = minHeight + "px";
-            ccontent[i].style.left = ccontent[minIndex] + ccontent[i].offsetLeft + 'px';
+            ccontent[i].style.left = ccontent[minIndex].offsetLeft + 'px';
+            BoxHeightArr[minIndex] += ccontent[i].offsetHeight;
         }
     }
 
@@ -48,6 +94,4 @@ function getChildElement(parent, content) {
         }
     }
     return contentArr;
-}
-tArr;
 }
